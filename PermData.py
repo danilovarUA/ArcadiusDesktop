@@ -26,14 +26,13 @@ class PermDictThread(threading.Thread):
     def __init__(self):
         print("PermDictThread: init")
         threading.Thread.__init__(self)
+        self.load()
 
     def run(self):
         print("PermDictThread: run")
         while True:
             print(self.dictionary)
-            if self.dictionary is None:
-                self.load()
-            elif self.dictionary.changed:
+            if self.dictionary.changed:
                 self.store()
             time.sleep(TEMPDICT_STORE_TICK)
 
@@ -69,6 +68,3 @@ class PermStorage:
             time.sleep(TEMPDICT_GET_DICTIONARY_REATTEMPT)
         self.dictionary = self.thread.dictionary
         return self.dictionary
-
-ps = PermStorage()
-d = ps.get_dictionary()
