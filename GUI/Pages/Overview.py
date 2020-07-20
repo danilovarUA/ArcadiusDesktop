@@ -43,11 +43,11 @@ class OverviewPage(QWidget):
         #  table start displaying something fucked up
 
         self.log_table_widget = Table([(self.translation.get_text('time'), 150),
-                                       (self.translation.get_text('server'), 100),
+                                       (self.translation.get_text('server'), 150),
                                        (self.translation.get_text('mail'), 180),
                                        (self.translation.get_text('name'), 150),
-                                       (self.translation.get_text('module'), 100),
-                                       (self.translation.get_text('text'), 700)],
+                                       (self.translation.get_text('module'), 150),
+                                       (self.translation.get_text('text'), 800)],
                                       scrolling_off=True,
                                       sorting_off=True)
 
@@ -70,17 +70,17 @@ class OverviewPage(QWidget):
     def update_logs(self):
         logs = self.perm_dict["logs"][:Constants.LOGS_MAX_DISPLAY_AMOUNT]
         self.log_table_widget.setRowCount(len(logs))
-
+        print(logs)
         for log_counter in range(len(logs)):
             log = logs[log_counter]
             self.log_table_widget.setRowHeight(log_counter, Constants.TABLE_ROW_HEIGHT)
-            #self.log_table_widget.setItem(log_counter, 0,
-            #                              TextWidget(log.timestamp.strftime('%T %d.%m.%Y')))
-            self.log_table_widget.setItem(log_counter, 0, TextWidget(log["text"])) # TODO remake
-            #self.log_table_widget.setItem(log_counter, 2, TextWidget(log.email))
-            #self.log_table_widget.setItem(log_counter, 3, TextWidget(log.name))
-            #self.log_table_widget.setItem(log_counter, 4, TextWidget(log.module))
-            #self.log_table_widget.setItem(log_counter, 5, TextWidget(log.message))
+            self.log_table_widget.setItem(log_counter, 0,
+                                          TextWidget(log["time"].strftime('%T %d.%m.%Y')))
+            self.log_table_widget.setItem(log_counter, 1, TextWidget("Server name here")) # TODO remake
+            self.log_table_widget.setItem(log_counter, 2, TextWidget(str(log["account"])))  # TODO supposed to be a class Account here
+            self.log_table_widget.setItem(log_counter, 3, TextWidget("Player name here"))  # TODO remake
+            self.log_table_widget.setItem(log_counter, 4, TextWidget(log["source"]))
+            self.log_table_widget.setItem(log_counter, 5, TextWidget(log["text"]))
 
     def update_accounts(self):
         _accounts = {a.order: (a, thread) for a, thread in self.accounts_thread.get_accounts().items()}
