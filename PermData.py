@@ -66,3 +66,4 @@ class PermStorage:
             time.sleep(TEMPDICT_GET_DICTIONARY_REATTEMPT)
         self.dictionary = self.thread.dictionary
         return self.dictionary
+

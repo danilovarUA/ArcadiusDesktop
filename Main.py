@@ -28,4 +28,18 @@ def go():
     sys.exit(exec_code)
 
 
-go()
+def fuckAround():
+    # Permanent storage set up
+    #perm_dict = PermStorage().get_dictionary()
+
+    # Logger set up
+    #logger = Logger(perm_dict)
+
+    # Manager set up
+    acc = Account("shit11@shit.com", "shit@shit.com", "174")
+    success, data = acc.requester.enter()
+    print(success)
+    print(data)
+
+# go()
+fuckAround()

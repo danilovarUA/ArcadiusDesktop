@@ -1,32 +1,34 @@
 import requests
 import hashlib
-
-
-REQUEST_TIMEOUT = 6
+from bplist.bplist import BPListReader
 SERVER_URL = "https://backend2.lordsandknights.com/XYRALITY/WebObjects/LKWorldServer-RE-DE-4.woa/wa/"
+from Constants import WORLDS_URL, REQUEST_TIMEOUT
 
 
 class Requester:
-    def __init__(self, email, password):
+    def __init__(self, email, password, server):
         self.email = email
         self.password_hashed = hashlib.sha256(password.encode("utf-8")).hexdigest()
         self.header = create_header()
         self.cookies = None
+        self.map_url = None
+        self.regional_data_url = None
+        self.server = server
 
     def make(self, url, params, save_cookies=False):
         if "lordsandknights.com" not in url:
-            url = SERVER_URL + url
+            url = self.server.url + "/wa/" + url
 
         try:
             response = requests.get(url, params=params, headers=self.header, timeout=REQUEST_TIMEOUT)
+            reader = BPListReader(response.content)
+            to_check = reader.parse()
             if save_cookies:
-                to_check = response.json
                 to_use = extract_cookies(response)
             else:
-                to_check = response.json
                 to_use = to_check
             if "error" in to_check:
-                raise ValueError("Response contains error saying: " + to_check["error"])
+                return [False, to_check["error"]]
             if save_cookies:
                 self.header = create_header(to_use)
                 self.cookies = to_use
@@ -37,6 +39,11 @@ class Requester:
             return [False, str(error)]
 
     def enter(self):
+        worlds_result = self.worlds()
+        if not worlds_result[0]:
+            # TODO is it needed to delete Server here?
+            return worlds_result
+
         token_result = self.token()
         if not token_result[0]:
             self.header = create_header()
@@ -62,6 +69,19 @@ class Requester:
         url = "LoginAction/login"
         params = {}
         return self.make(url, params)
+
+    def worlds(self):
+        url = WORLDS_URL
+        params = {
+            "login": self.email,
+            "deviceId": self.email,
+            "password": self.password_hashed,
+            "deviceType": "Email",
+        }
+        success, data = self.make(url, params)
+        if success:
+            self.server.update_with_data(data)
+        return success, data
 
 
 def extract_cookies(response):
