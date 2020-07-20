@@ -20,30 +20,29 @@ class Requester:
     def make(self, url, params, save_cookies=False):
         if "lordsandknights.com" not in url:
             url = self.server.url + "/wa/" + url
-        #try:
-        response = requests.get(url, params=params, headers=self.header, timeout=REQUEST_TIMEOUT)
-        reader = BPListReader(response.content)
-        to_check = reader.parse()
-        if save_cookies:
-            to_use = extract_cookies(response)
-        else:
-            to_use = to_check
-        if "error" in to_check:
-            return [False, to_check["error"]]
-        if save_cookies:
-            self.header = create_header(to_use)
-            self.cookies = to_use
-            return [True, "Headers updated"]
-        else:
-            self.data.parse_dict(to_use)
-            return [True, to_use]
-        #except Exception as error:  #  # TODO return back for production
-            #return [False, str(error)]
+        try:
+            response = requests.get(url, params=params, headers=self.header, timeout=REQUEST_TIMEOUT)
+            reader = BPListReader(response.content)
+            to_check = reader.parse()
+            if save_cookies:
+                to_use = extract_cookies(response)
+            else:
+                to_use = to_check
+            if "error" in to_check:
+                return [False, to_check["error"]]
+            if save_cookies:
+                self.header = create_header(to_use)
+                self.cookies = to_use
+                return [True, to_use]
+            else:
+                self.data.parse_dict(to_use)
+                return [True, to_use]
+        except Exception as error:
+            return [False, str(error)]
 
     def enter(self):
         worlds_result = self.worlds()
         if not worlds_result[0]:
-            # TODO is it needed to delete Server here?
             return worlds_result
 
         token_result = self.token()

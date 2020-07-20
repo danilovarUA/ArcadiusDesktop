@@ -59,7 +59,6 @@ translation = {
 
 class Translation:
     def __init__(self, perm_dict):
-        # TODO: create a script that sets up all the default values if they are not in there
         self.language = perm_dict["settings"]["language"]
 
     def get_text(self, key):

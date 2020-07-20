@@ -10,7 +10,16 @@ from Constants import TEMPDICT_STORE_TICK, TEMPDICT_PICKLE_FILENAME, TEMPDICT_GE
 class PermDict(UserDict):
     changed = False
 
-    def __init__(self, dictionary=None):
+    def __init__(self):
+        dictionary =\
+            {
+                "logs": [],
+                "accs": [],
+                "settings":
+                    {
+                        "language": "en"
+                    }
+            }
         print("PermDict: init")
         super().__init__(dictionary)
 
@@ -66,4 +75,3 @@ class PermStorage:
             time.sleep(TEMPDICT_GET_DICTIONARY_REATTEMPT)
         self.dictionary = self.thread.dictionary
         return self.dictionary
-
