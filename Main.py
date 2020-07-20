@@ -37,9 +37,8 @@ def fuckAround():
 
     # Manager set up
     acc = Account("shit11@shit.com", "shit@shit.com", "174")
-    success, data = acc.requester.enter()
-    print(success)
-    print(data)
+    s, r = acc.requester.enter()
+    temp_data = acc.requester.data.data
+    print(temp_data)
 
 # go()
-fuckAround()

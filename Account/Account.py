@@ -7,5 +7,4 @@ class Account:
         self.password = password
         self.server = Server(server_id)
         self.password_hashed = None  # TODO: hash password
-        self.data_dict = {}
         self.requester = Requester(email, password, self.server)
