@@ -2,10 +2,9 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QWidget, QGridLayout, QTableWidgetItem
 import Constants
-from Data import get_logs
-from GUI import Translation
-from Tool import text_to_widget
+from GUI.Translation import Translation
 from GUI.Template.Table import Table
+from GUI.Template.TextWidget import TextWidget
 
 
 def checkbox_handler(item: QTableWidgetItem):
@@ -20,39 +19,40 @@ def checkbox_handler(item: QTableWidgetItem):
 
 
 class OverviewPage(QWidget):
-    def __init__(self, accounts_thread):
+    def __init__(self, manager, perm_dict):
         super().__init__()
+        self.perm_dict = perm_dict
+        self.manager = manager
+        self.translation = Translation(perm_dict)
 
-        self.accounts_thread = accounts_thread
-
-        self.accounts_table_widget = Table([("", 0),
-                                            (Translation.get_text('server'), 200),
-                                            (Translation.get_text('license'), 200),
-                                            (Translation.get_text('mail'), 200),
-                                            (Translation.get_text('name'), 200),
-                                            (Translation.get_text('points'), None),
-                                            (Translation.get_text('attacks'), 80),
-                                            (Translation.get_text('messages'), 80),
-                                            (Translation.get_text('reports'), 80),
-                                            ("", 0),
-                                            (Translation.get_text('error'), 243), ],
-                                           scrolling_off=True,
-                                           table_click_handler=self.update_accounts,
-                                           item_click_handler=checkbox_handler)
+        # self.accounts_table_widget = Table([("", 0),
+        #                                     (self.translation.get_text('server'), 200),
+        #                                     (self.translation.get_text('license'), 200),
+        #                                     (self.translation.get_text('mail'), 200),
+        #                                     (self.translation.get_text('name'), 200),
+        #                                     (self.translation.get_text('points'), None),
+        #                                     (self.translation.get_text('attacks'), 80),
+        #                                     (self.translation.get_text('messages'), 80),
+        #                                     (self.translation.get_text('reports'), 80),
+        #                                     ("", 0),
+        #                                     (self.translation.get_text('error'), 243), ],
+        #                                    scrolling_off=True,
+        #                                    table_click_handler=self.update_accounts,
+        #                                    item_click_handler=checkbox_handler)
         # TODO Bug here. Supposedly due to that kind of sorting not changing .order of accounts after sorting accounts
         #  table start displaying something fucked up
 
-        self.log_table_widget = Table([(Translation.get_text('time'), 150),
-                                       (Translation.get_text('server'), 100),
-                                       (Translation.get_text('mail'), 180),
-                                       (Translation.get_text('name'), 150),
-                                       (Translation.get_text('module'), 100),
-                                       (Translation.get_text('text'), 700)],
+        self.log_table_widget = Table([(self.translation.get_text('time'), 150),
+                                       (self.translation.get_text('server'), 100),
+                                       (self.translation.get_text('mail'), 180),
+                                       (self.translation.get_text('name'), 150),
+                                       (self.translation.get_text('module'), 100),
+                                       (self.translation.get_text('text'), 700)],
                                       scrolling_off=True,
                                       sorting_off=True)
 
         layout = QGridLayout()
-        layout.addWidget(self.accounts_table_widget, 0, 0)
+        #layout.addWidget(self.accounts_table_widget, 0, 0)
         layout.addWidget(self.log_table_widget, 1, 0)
 
         self.setLayout(layout)
@@ -65,22 +65,22 @@ class OverviewPage(QWidget):
 
     def update_all(self):
         self.update_logs()
-        self.update_accounts()
+        # self.update_accounts()
 
     def update_logs(self):
-        logs = get_logs()[:Constants.LOGS_MAX_AMOUNT]
+        logs = self.perm_dict["logs"][:Constants.LOGS_MAX_DISPLAY_AMOUNT]
         self.log_table_widget.setRowCount(len(logs))
 
         for log_counter in range(len(logs)):
             log = logs[log_counter]
             self.log_table_widget.setRowHeight(log_counter, Constants.TABLE_ROW_HEIGHT)
-            self.log_table_widget.setItem(log_counter, 0,
-                                          text_to_widget(log.timestamp.strftime('%T %d.%m.%Y'), center=True))
-            self.log_table_widget.setItem(log_counter, 1, text_to_widget(log.server, center=True))
-            self.log_table_widget.setItem(log_counter, 2, text_to_widget(log.email, center=True))
-            self.log_table_widget.setItem(log_counter, 3, text_to_widget(log.name, center=True))
-            self.log_table_widget.setItem(log_counter, 4, text_to_widget(log.module, center=True))
-            self.log_table_widget.setItem(log_counter, 5, text_to_widget(log.message))
+            #self.log_table_widget.setItem(log_counter, 0,
+            #                              TextWidget(log.timestamp.strftime('%T %d.%m.%Y')))
+            self.log_table_widget.setItem(log_counter, 0, TextWidget(log["text"])) # TODO remake
+            #self.log_table_widget.setItem(log_counter, 2, TextWidget(log.email))
+            #self.log_table_widget.setItem(log_counter, 3, TextWidget(log.name))
+            #self.log_table_widget.setItem(log_counter, 4, TextWidget(log.module))
+            #self.log_table_widget.setItem(log_counter, 5, TextWidget(log.message))
 
     def update_accounts(self):
         _accounts = {a.order: (a, thread) for a, thread in self.accounts_thread.get_accounts().items()}
@@ -108,21 +108,21 @@ class OverviewPage(QWidget):
             status.setBackground(account_thread.status_color)
 
             self.accounts_table_widget.setItem(index, 0, active)
-            self.accounts_table_widget.setItem(index, 1, text_to_widget(account.world_info['name'], center=True))
-            self.accounts_table_widget.setItem(index, 2, text_to_widget("(some date)", center=True))
-            self.accounts_table_widget.setItem(index, 3, text_to_widget(account.email, center=True))
+            self.accounts_table_widget.setItem(index, 1, TextWidget(account.world_info['name'], center=True))
+            self.accounts_table_widget.setItem(index, 2, TextWidget("(some date)", center=True))
+            self.accounts_table_widget.setItem(index, 3, TextWidget(account.email, center=True))
             self.accounts_table_widget.setItem(index, 9, status)
-            self.accounts_table_widget.setItem(index, 10, text_to_widget(account_thread.status_text, center=True))
+            self.accounts_table_widget.setItem(index, 10, TextWidget(account_thread.status_text, center=True))
 
             if account_thread.is_data_ready:
-                self.accounts_table_widget.setItem(index, 4, text_to_widget(player_object.get('nick', ''), center=True))
+                self.accounts_table_widget.setItem(index, 4, TextWidget(player_object.get('nick', ''), center=True))
                 self.accounts_table_widget.setItem(index, 5,
-                                                   text_to_widget(str(player_object.get('points', '')), center=True))
-                self.accounts_table_widget.setItem(index, 6, text_to_widget(str(len(base.habitat_under_attack_array)),
+                                                   TextWidget(str(player_object.get('points', '')), center=True))
+                self.accounts_table_widget.setItem(index, 6, TextWidget(str(len(base.habitat_under_attack_array)),
                                                                             center=True))
                 self.accounts_table_widget.setItem(index, 7,
-                                                   text_to_widget(str(base.unread_discussion_count), center=True))
-                self.accounts_table_widget.setItem(index, 8, text_to_widget(str(base.unread_report_count), center=True))
+                                                   TextWidget(str(base.unread_discussion_count), center=True))
+                self.accounts_table_widget.setItem(index, 8, TextWidget(str(base.unread_report_count), center=True))
             else:
                 for i in range(4, 9):
-                    self.accounts_table_widget.setItem(index, i, text_to_widget(''))
+                    self.accounts_table_widget.setItem(index, i, TextWidget(''))

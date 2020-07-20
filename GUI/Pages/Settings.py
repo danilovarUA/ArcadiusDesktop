@@ -1,8 +1,6 @@
 from PyQt5 import QtCore
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QGridLayout, QWidget, QVBoxLayout, QComboBox, QSlider
-
-import Settings
 from GUI import Translation
 from GUI.Template.Line import HLine, VLine
 from GUI.Template.Label import Label

@@ -1,29 +1,33 @@
 class Task:
-    def __init__(self, time, func, on_fail_func, description, priority, account, prepending_tasks=None):
+    def __init__(self, time, func, description, priority, account, perm_dict):
         self.time = time  # none if time is not necessary
         self.status = "waiting"  # waiting, running, done, failed
         self.error = None  # error if task failed(mostly it is error from a response)
         self.func = func  # function to run
-        self.on_fail_func = on_fail_func  # function to run if failed
-        self.priority = priority  # user, calculation, request
         self.description = description  # some text to describe
-        self.prepending_tasks = prepending_tasks  # tasks to be ran before running that one
         self.account = account  # account task is running for
+        self.perm_dict = perm_dict  # link to perDict
 
     # function:
+    # - takes account to perform requests and store temp information and per_dict to store permanent information
+    # - return result(true/false) and error_or_data(error is text of error), where data is be
+    # {"scheduled_tasks": [], "regular_tasks": []}
     # 1) reads database
     # 2) sends request
     # 3) modifies database
-    # 4) creates new tasks
+    # 4) creates and returns new tasks
     # some steps may be skipped but order must not be changed to avoid database modifications without actually
     # performing task with request
 
     def run(self):
         self.status = "running"
-        result, error = self.func()
+        result, error_or_data = self.func(self.account, self.perm_dict)
+        # TODO do I really need to pass it here to function or can I pass it in modules?
         if not result:
             self.status = "failed"
-            self.error = error
-            self.on_fail_func()
+            self.error = error_or_data
+            return None
         else:
             self.status = "done"
+            return error_or_data
+

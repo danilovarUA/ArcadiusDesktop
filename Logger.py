@@ -7,16 +7,12 @@ class Logger:
             permDict["logs"] = []
         self.permDict = permDict
 
-
     def add_log(self, text, source, account, user_visible=False, finished=None):
         new_log = {"text": text, "source": source, "user_visible": user_visible, "finished": finished, "error": None,
                    "time": datetime.now(), "account": account}
         self.permDict["logs"].append(new_log)
         self.permDict.changed = True
-
-    def clean_old_logs(self):
-        raise ValueError("Function not finished")
-        self.permDict.changed = True
+        print(new_log)  # TODO: temporary
 
     def finish_log(self, log_id, success, error):
         self.permDict["logs"][log_id]["finished"] = success

@@ -1,5 +1,3 @@
-import Settings
-
 LANGUAGES = ["en", "de", "ru", "emoji"]
 
 translation = {
@@ -59,10 +57,14 @@ translation = {
 }
 
 
-def get_text(key: str) -> str:
-    language = Settings.get('language')
-    try:
-        language_index = LANGUAGES.index(language)
-    except ValueError:
-        raise ValueError("{} - wrong language".format(language))
-    return translation[key][language_index]
+class Translation:
+    def __init__(self, perm_dict):
+        # TODO: create a script that sets up all the default values if they are not in there
+        self.language = perm_dict["settings"]["language"]
+
+    def get_text(self, key):
+        try:
+            language_index = LANGUAGES.index(self.language)
+        except ValueError:
+            raise ValueError("{} - wrong language".format(self.language))
+        return translation[key][language_index]

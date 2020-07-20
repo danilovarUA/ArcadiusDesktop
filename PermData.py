@@ -61,8 +61,6 @@ class PermStorage:
 
     def get_dictionary(self):
         print("PermStorage: getDict")
-        if self.dictionary is not None:
-            return self.dictionary
         while self.thread.dictionary is None:
             print("PermStorage: no dict yet")
             time.sleep(TEMPDICT_GET_DICTIONARY_REATTEMPT)
