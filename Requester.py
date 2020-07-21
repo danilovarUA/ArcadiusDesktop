@@ -3,23 +3,22 @@ from Constants import WORLDS_URL, REQUEST_TIMEOUT
 import requests
 import hashlib
 from bplist.bplist import BPListReader
-SERVER_URL = "https://backend2.lordsandknights.com/XYRALITY/WebObjects/LKWorldServer-RE-DE-4.woa/wa/"
 
 
 class Requester:
-    def __init__(self, email, password, server):
-        self.email = email
-        self.password_hashed = hashlib.sha256(password.encode("utf-8")).hexdigest()
+    def __init__(self, account):
+        self.email = account.email
+        self.password_hashed = hashlib.sha256(account.password.encode("utf-8")).hexdigest()
         self.header = create_header()
         self.cookies = None
         self.map_url = None
         self.regional_data_url = None
-        self.server = server
+        self.account = account
         self.data = Data()
 
     def make(self, url, params, save_cookies=False):
         if "lordsandknights.com" not in url:
-            url = self.server.url + "/wa/" + url
+            url = self.account.server["url"]["main"] + "/wa/" + url
         try:
             response = requests.get(url, params=params, headers=self.header, timeout=REQUEST_TIMEOUT)
             reader = BPListReader(response.content)
@@ -83,7 +82,7 @@ class Requester:
         }
         success, data = self.make(url, params)
         if success:
-            self.server.update_with_data(data)
+            self.account.update_server(data)
         return success, data
 
 
