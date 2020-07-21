@@ -8,12 +8,9 @@ from Tools.HeaderBuilder import create_header
 
 class Requester:
     def __init__(self, account):
-        self.email = account.email
         self.password_hashed = hashlib.sha256(account.password.encode("utf-8")).hexdigest()
         self.header = create_header()
         self.cookies = None
-        self.map_url = None
-        self.regional_data_url = None
         self.account = account
 
     def make(self, url, params, save_cookies=False):
@@ -57,7 +54,7 @@ class Requester:
     def token(self):
         url = "LoginAction/token"
         params = {
-            "login": self.email,
+            "login": self.account.email,
             "password": self.password_hashed,
             "deviceType": "Email",
         }
@@ -75,8 +72,8 @@ class Requester:
     def worlds(self):
         url = WORLDS_URL
         params = {
-            "login": self.email,
-            "deviceId": self.email,
+            "login": self.account.email,
+            "deviceId": self.account.email,
             "password": self.password_hashed,
             "deviceType": "Email",
         }

@@ -1,13 +1,17 @@
-from Scheduler.AccountThread import AccountThread
 from Account import Account
 
 
 class Manager:
     def __init__(self, logger, perm_dict, start_all=True):
-        self.threads = []
+        self.accounts = []
         if start_all:
             for acc_dict in perm_dict["accs"]:
-                new_account = Account(acc_dict)
-                new_thread = AccountThread(new_account, logger, perm_dict)
-                new_thread.start()
-                self.threads.append(new_thread)
+                new_account = Account(acc_dict, logger, perm_dict)
+                new_account.start()
+                self.accounts.append(new_account)
+
+    def toggle_account(self, email, server_id):
+        for account in self.accounts:
+            if account.email == email and account.server["id"] == server_id:
+                account.active = not account.active
+                break
