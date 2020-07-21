@@ -39,6 +39,7 @@ class Requester:
     def enter(self):
         worlds_result = self.worlds()
         if not worlds_result[0]:
+            self.header = create_header()
             return worlds_result
 
         token_result = self.token()
@@ -79,5 +80,5 @@ class Requester:
         }
         success, data = self.make(url, params)
         if success:
-            self.account.update_server(data)
+            self.account.update_data(data)
         return success, data

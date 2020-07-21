@@ -45,7 +45,10 @@ class Account(threading.Thread):
     def perform_task(self):
         if len(self.tasks) > 0:
             task = self.tasks.pop(0)
-            return task.run()
+            result = task.run()
+            if task.status == "failed":
+                self.handle_failed_task(task)
+            return result
 
     def add_task(self, task_time, func, description):
         self.tasks.append(Task(task_time, func, description, self))
@@ -169,3 +172,6 @@ class Account(threading.Thread):
                 self.data["report"][item["id"]] = item
         except KeyError:
             pass
+
+    def handle_failed_task(self, task):
+        pass
