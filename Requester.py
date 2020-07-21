@@ -1,4 +1,3 @@
-from Account.Data import Data
 from Constants import WORLDS_URL, REQUEST_TIMEOUT
 import requests
 import hashlib
@@ -14,7 +13,6 @@ class Requester:
         self.map_url = None
         self.regional_data_url = None
         self.account = account
-        self.data = Data()
 
     def make(self, url, params, save_cookies=False):
         if "lordsandknights.com" not in url:
@@ -34,7 +32,7 @@ class Requester:
                 self.cookies = to_use
                 return [True, to_use]
             else:
-                self.data.parse_dict(to_use)
+                self.account.data.parse_dict(to_use)
                 return [True, to_use]
         except Exception as error:
             return [False, str(error)]
@@ -64,7 +62,7 @@ class Requester:
         result = self.make(url=url,
                            params=params,
                            save_cookies=True)
-        self.data.own_id = self.cookies["playerID"]
+        self.account.player_id = self.cookies["playerID"]
         return result
 
     def login(self):
