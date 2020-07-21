@@ -1,5 +1,5 @@
 from Scheduler.AccountThread import AccountThread
-from Account.Account import Account
+from Account import Account
 
 
 class Manager:

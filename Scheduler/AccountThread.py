@@ -15,14 +15,13 @@ class AccountThread(threading.Thread):
         self.logger = logger
         self.perm_dict = perm_dict
         self.idle = False
-        self.add_startup_tasks()
         self.running = True
+
+        self.add_startup_tasks()
 
     def perform_task(self):
         if len(self.tasks) > 0:
             task = self.tasks.pop(0)
-            self.logger.add_log("performing task {}".format(task.description), "(s)AccountThread",
-                                self.account)
             return task.run()
 
     def tick(self):
@@ -31,7 +30,6 @@ class AccountThread(threading.Thread):
             if scheduled_task_time == datetime.now():
                 self.tasks += self.scheduled_tasks[scheduled_task_time]
                 del self.scheduled_tasks[scheduled_task_time]
-                # TODO: check if that removes tasks from memory completely
 
         new_tasks = self.perform_task()
 
