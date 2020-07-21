@@ -14,7 +14,7 @@ class PermDict(UserDict):
         dictionary =\
             {
                 "logs": [],
-                "accs": [],
+                "accs": {},  # [email, server_id]: {email, password, name, server_id, server_name, position}
                 "settings":
                     {
                         "language": "en"

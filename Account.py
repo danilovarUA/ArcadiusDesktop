@@ -10,7 +10,7 @@ RELATIONSHIP_NUM_TO_WORD = {"-1": "red", "1": "blue", "2": "green", "3": "orange
 
 class Account(threading.Thread):
     def __init__(self, dictionary, logger, perm_dict):
-        # name, server_id, server_name
+        # email, password, name, server_id, server_name
         threading.Thread.__init__(self)
         self.email = dictionary["email"]
         self.password = dictionary["password"]
@@ -20,7 +20,9 @@ class Account(threading.Thread):
                        "last_login": None,
                        "urls": {"region": None, "map": None, "main": None}}
 
-        self.data = {"player": {},
+        self.data = {"player": {"-1": {"name": dictionary["name"]}},
+                     # player with index -1 is used when player_id is None so we can have name for logs before
+                     # logging in
                      "player_rank": {},
                      "alliance": {},
                      "habitat": {},
@@ -29,7 +31,6 @@ class Account(threading.Thread):
                      "transit": [],
                      "diplomacy": {"red": [], "green": [], "blue": [], "orange": []}}
         self.player_id = None
-        self.player_data = {"name": dictionary["name"]}  # That is a copy of player with id == player_id for fast access
 
         self.requester = Requester(self)
         self.tasks = []
@@ -88,7 +89,7 @@ class Account(threading.Thread):
             else:
                 time.sleep(INACTIVE_THREAD_CHECK_TICK)
 
-    def update_data(self, dict_to_parse):
+    def update_data(self, dict_to_parse, update_perm_dict=True):
         try:
             for world in dict_to_parse["loginConnectedWorlds"]:
                 if world["id"].decode('ascii') == self.server["id"]:
@@ -172,6 +173,21 @@ class Account(threading.Thread):
                 self.data["report"][item["id"]] = item
         except KeyError:
             pass
+
+        if update_perm_dict:
+            if self.player_id is not None:
+                name = self.data["player"][self.player_id]["name"]
+            else:
+                name = self.data["player"]["-1"]["name"]
+            self.perm_dict[self.email, self.server["id"]] = {
+                "email": self.email,
+                "password": self.password,
+                "name": name,
+                "server_id": self.server["id"],
+                "server_name": self.server["id"],
+                "position": self.perm_dict[self.email, self.server["id"]]["position"]
+            }
+            self.perm_dict.changed = True
 
     def handle_failed_task(self, task):
         pass
