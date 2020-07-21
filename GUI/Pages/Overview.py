@@ -68,19 +68,17 @@ class OverviewPage(QWidget):
         # self.update_accounts()
 
     def update_logs(self):
-        logs = self.perm_dict["logs"][:Constants.LOGS_MAX_DISPLAY_AMOUNT]
+        logs = list(reversed(self.perm_dict["logs"]))[:Constants.LOGS_MAX_DISPLAY_AMOUNT]
         self.log_table_widget.setRowCount(len(logs))
-        print(logs)
         for log_counter in range(len(logs)):
             log = logs[log_counter]
             self.log_table_widget.setRowHeight(log_counter, Constants.TABLE_ROW_HEIGHT)
             self.log_table_widget.setItem(log_counter, 0,
                                           TextWidget(log["time"].strftime('%T %d.%m.%Y')))
-            self.log_table_widget.setItem(log_counter, 1, TextWidget("Server name here")) # TODO remake
+            self.log_table_widget.setItem(log_counter, 1, TextWidget(log["server"])) # TODO remake
             self.log_table_widget.setItem(log_counter, 2, TextWidget(str(log["account"])))  # TODO supposed to be a class Account here
-            self.log_table_widget.setItem(log_counter, 3, TextWidget("Player name here"))  # TODO remake
-            self.log_table_widget.setItem(log_counter, 4, TextWidget(log["source"]))
-            self.log_table_widget.setItem(log_counter, 5, TextWidget(log["text"]))
+            self.log_table_widget.setItem(log_counter, 3, TextWidget(log["source"]))
+            self.log_table_widget.setItem(log_counter, 4, TextWidget(log["text"]))
 
     def update_accounts(self):
         _accounts = {a.order: (a, thread) for a, thread in self.accounts_thread.get_accounts().items()}

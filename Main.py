@@ -1,9 +1,7 @@
 from PermData import PermStorage
 from Logger import Logger
 from GUI.MainWidget import MainWidget
-from Scheduler.AccountThread import AccountThread
 from Scheduler.Manager import Manager
-from Account.Account import Account
 
 from PyQt5.QtWidgets import QApplication
 import sys
@@ -12,7 +10,6 @@ import sys
 def go():
     # Permanent storage set up
     perm_dict = PermStorage().get_dictionary()
-
     # Logger set up
     logger = Logger(perm_dict)
 
@@ -28,17 +25,4 @@ def go():
     sys.exit(exec_code)
 
 
-def fuckAround():
-    # Permanent storage set up
-    #perm_dict = PermStorage().get_dictionary()
-
-    # Logger set up
-    #logger = Logger(perm_dict)
-
-    # Manager set up
-    acc = Account("shit11@shit.com", "shit@shit.com", "174")
-    s, r = acc.requester.enter()
-    temp_data = acc.requester.data.data
-    print(temp_data)
-
-# go()
+go()

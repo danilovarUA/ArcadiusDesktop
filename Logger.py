@@ -7,7 +7,7 @@ class Logger:
 
     def add_log(self, text, source, account, user_visible=False, finished=None):
         new_log = {"text": text, "source": source, "user_visible": user_visible, "finished": finished, "error": None,
-                   "time": datetime.now(), "account": account}
+                   "time": datetime.now(), "email": account.email, "server": account.server.name}
         self.permDict["logs"].append(new_log)
         self.permDict.changed = True
 

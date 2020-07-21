@@ -1,9 +1,9 @@
 class Server:
-    def __init__(self, server_id):
+    def __init__(self, server_id, name=None):
         self.server_id = server_id
         self.last_login = None
         self.status_description = None
-        self.name = None
+        self.name = name
         self.region_url = None
         self.map_url = None
         self.url = None

@@ -2,7 +2,7 @@ from datetime import datetime
 from Scheduler.Task import Task
 import threading
 import time
-from Constants import ACCOUNT_THREAD_IDLE_TICK
+from Constants import ACCOUNT_THREAD_IDLE_TICK, INACTIVE_THREAD_CHECK_TICK
 from Modules import TestModule
 
 
@@ -21,7 +21,7 @@ class AccountThread(threading.Thread):
     def perform_task(self):
         if len(self.tasks) > 0:
             task = self.tasks.pop(0)
-            self.logger.add_log("performing task {}".format(task.description), "account thread task performer",
+            self.logger.add_log("performing task {}".format(task.description), "(s)AccountThread",
                                 self.account)
             return task.run()
 
@@ -38,13 +38,18 @@ class AccountThread(threading.Thread):
         # Add tasks created by performed task
         if new_tasks is not None:
             self.tasks += new_tasks["regular_tasks"]
-            self.scheduled_tasks += new_tasks["scheduled_tasks"]
+            for tasks_time in new_tasks["scheduled_tasks"]:
+                tasks = new_tasks["scheduled_tasks"][tasks_time]
+                if tasks_time in self.scheduled_tasks:
+                    self.scheduled_tasks[tasks_time] += tasks
+                else:
+                    self.scheduled_tasks[tasks_time] = [tasks]
             self.idle = False
         else:
             self.idle = True
 
-    def add_task(self, time, func, description):
-        self.tasks.append(Task(time, func, description, self.account, self.perm_dict))
+    def add_task(self, task_time, func, description):
+        self.tasks.append(Task(task_time, func, description, self.account, self.perm_dict, self.logger))
 
     def run(self):
         while True:
@@ -53,8 +58,8 @@ class AccountThread(threading.Thread):
                 if self.idle:
                     time.sleep(ACCOUNT_THREAD_IDLE_TICK)
             else:
-                time.sleep(1)  # TODO: move to constants
+                time.sleep(INACTIVE_THREAD_CHECK_TICK)
 
     def add_startup_tasks(self):
-        self.add_task(None, TestModule.run(self.account, self.logger, self.perm_dict), "some test task")
+        self.add_task(None, TestModule.run, "some test task")
         # TODO: rewrite so that all run() functions in files in Modules folder are ran here

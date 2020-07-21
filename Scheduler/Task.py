@@ -1,5 +1,5 @@
 class Task:
-    def __init__(self, time, func, description, priority, account, perm_dict):
+    def __init__(self, time, func, description, account, perm_dict, logger):
         self.time = time  # none if time is not necessary
         self.status = "waiting"  # waiting, running, done, failed
         self.error = None  # error if task failed(mostly it is error from a response)
@@ -7,6 +7,7 @@ class Task:
         self.description = description  # some text to describe
         self.account = account  # account task is running for
         self.perm_dict = perm_dict  # link to perDict
+        self.logger = logger  # link to Logger
 
     # function:
     # - takes account to perform requests and store temp information and per_dict to store permanent information
@@ -21,7 +22,7 @@ class Task:
 
     def run(self):
         self.status = "running"
-        result, error_or_data = self.func(self.account, self.perm_dict)
+        result, error_or_data = self.func(self.account, self.logger, self.perm_dict)
         # TODO do I really need to pass it here to function or can I pass it in modules?
         if not result:
             self.status = "failed"

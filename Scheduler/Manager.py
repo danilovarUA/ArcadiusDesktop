@@ -6,8 +6,8 @@ class Manager:
     def __init__(self, logger, perm_dict, start_all=True):
         self.threads = []
         if start_all:
-            for acc in perm_dict["accs"]:
-                new_account = Account(acc["email"], acc["password"], acc["server_id"])
+            for acc_dict in perm_dict["accs"]:
+                new_account = Account(acc_dict)
                 new_thread = AccountThread(new_account, logger, perm_dict)
                 new_thread.start()
                 self.threads.append(new_thread)
