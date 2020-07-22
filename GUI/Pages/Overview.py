@@ -76,9 +76,10 @@ class OverviewPage(QWidget):
             self.log_table_widget.setItem(log_counter, 0,
                                           TextWidget(log["time"].strftime('%T %d.%m.%Y')))
             self.log_table_widget.setItem(log_counter, 1, TextWidget(log["server"])) # TODO remake
-            self.log_table_widget.setItem(log_counter, 2, TextWidget(str(log["account"])))  # TODO supposed to be a class Account here
-            self.log_table_widget.setItem(log_counter, 3, TextWidget(log["source"]))
-            self.log_table_widget.setItem(log_counter, 4, TextWidget(log["text"]))
+            self.log_table_widget.setItem(log_counter, 2, TextWidget(str(log["email"])))  # TODO supposed to be a class Account here
+            self.log_table_widget.setItem(log_counter, 3, TextWidget(log["name"]))
+            self.log_table_widget.setItem(log_counter, 4, TextWidget(log["source"]))
+            self.log_table_widget.setItem(log_counter, 5, TextWidget(log["text"]))
 
     def update_accounts(self):
         _accounts = {a.order: (a, thread) for a, thread in self.accounts_thread.get_accounts().items()}

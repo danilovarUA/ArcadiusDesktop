@@ -16,37 +16,38 @@ class Requester:
     def make(self, url, params, save_cookies=False):
         if "lordsandknights.com" not in url:
             url = self.account.server["url"]["main"] + "/wa/" + url
-        try:
-            response = requests.get(url, params=params, headers=self.header, timeout=REQUEST_TIMEOUT)
-            reader = BPListReader(response.content)
-            to_check = reader.parse()
-            if save_cookies:
-                to_use = extract_cookies(response)
-            else:
-                to_use = to_check
-            if "error" in to_check:
-                return [False, to_check["error"]]
-            if save_cookies:
-                self.header = create_header(to_use)
-                self.cookies = to_use
-                return [True, to_use]
-            else:
-                self.account.data.parse_dict(to_use)
-                return [True, to_use]
-        except Exception as error:
-            return [False, str(error)]
+        #try:  # TODO move back
+        response = requests.get(url, params=params, headers=self.header, timeout=REQUEST_TIMEOUT)
+        reader = BPListReader(response.content)
+        to_check = reader.parse()
+        if save_cookies:
+            to_use = extract_cookies(response)
+        else:
+            to_use = to_check
+        if "error" in to_check:
+            return [False, to_check["error"]]
+        if save_cookies:
+            self.header = create_header(to_use)
+            self.cookies = to_use
+            return [True, to_use]
+        else:
+            self.account.update_data(to_use)
+            return [True, to_use]
+        #except Exception as error:
+            #return [False, str(error)]
 
     def enter(self):
         worlds_result = self.worlds()
         if not worlds_result[0]:
             self.header = create_header()
             return worlds_result
+        print("Got worlds")
 
         token_result = self.token()
         if not token_result[0]:
             self.header = create_header()
             return token_result
-
+        print("Got token")
         login_result = self.login()
         if not login_result[0]:
             self.header = create_header()
@@ -62,7 +63,8 @@ class Requester:
         result = self.make(url=url,
                            params=params,
                            save_cookies=True)
-        self.account.player_id = self.cookies["playerID"]
+        if result[0]:
+            self.account.player_id = self.cookies["playerID"]
         return result
 
     def login(self):

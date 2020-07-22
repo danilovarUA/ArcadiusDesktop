@@ -10,7 +10,16 @@ import sys
 def go():
     # Permanent storage set up
     perm_dict = PermStorage().get_dictionary()
+    # perm_dict["accs"]["shit11@shit.com-173"] = {"email": "shit11@shit.com",
+    #                                     "password": "shit@shit.com",
+    #                                     "name": "shit",
+    #                                     "server_id": "173",
+    #                                     "server_name": "sName",
+    #                                     "position": "0",
+    #                                     }
+    # exit()
     # Logger set up
+    # perm_dict["logs"] = []
     logger = Logger(perm_dict)
 
     # Manager set up

@@ -14,7 +14,7 @@ class PermDict(UserDict):
         dictionary =\
             {
                 "logs": [],
-                "accs": {},  # [email, server_id]: {email, password, name, server_id, server_name, position}
+                "accs": {},  # ["email-server_id"]: {email, password, name, server_id, server_name, position}
                 "settings":
                     {
                         "language": "en"
@@ -48,7 +48,6 @@ class PermDictThread(threading.Thread):
             self.dictionary = PermDict()
 
     def store(self):
-        print("PermDictThread: store")
         with open(TEMPDICT_PICKLE_FILENAME, 'wb') as file:
             pickle.dump(self.dictionary, file, protocol=pickle.HIGHEST_PROTOCOL)
         self.dictionary.changed = False
@@ -66,3 +65,4 @@ class PermStorage:
             time.sleep(TEMPDICT_GET_DICTIONARY_REATTEMPT)
         self.dictionary = self.thread.dictionary
         return self.dictionary
+

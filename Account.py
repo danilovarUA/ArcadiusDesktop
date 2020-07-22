@@ -1,5 +1,5 @@
 from Requester import Requester
-from Modules import TestModule
+from Modules import TestModule, Enter
 from Scheduler.Task import Task
 import threading
 from datetime import datetime
@@ -11,6 +11,7 @@ RELATIONSHIP_NUM_TO_WORD = {"-1": "red", "1": "blue", "2": "green", "3": "orange
 class Account(threading.Thread):
     def __init__(self, dictionary, logger, perm_dict):
         # email, password, name, server_id, server_name
+        print("New account {}-{} init".format(dictionary["email"], dictionary["server_id"]))
         threading.Thread.__init__(self)
         self.email = dictionary["email"]
         self.password = dictionary["password"]
@@ -18,7 +19,7 @@ class Account(threading.Thread):
                        "status": None,
                        "name": dictionary["server_name"],
                        "last_login": None,
-                       "urls": {"region": None, "map": None, "main": None}}
+                       "url": {"region": None, "map": None, "main": None}}
 
         self.data = {"player": {"-1": {"name": dictionary["name"]}},
                      # player with index -1 is used when player_id is None so we can have name for logs before
@@ -56,6 +57,7 @@ class Account(threading.Thread):
 
     def add_startup_tasks(self):
         self.add_task(None, TestModule.run, "some test task")
+        self.add_task(None, Enter.run, "Enter module")
         # TODO: rewrite so that all run() functions in files in Modules folder are ran here
 
     def tick(self):
