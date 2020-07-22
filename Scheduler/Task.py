@@ -1,10 +1,9 @@
 class Task:
-    def __init__(self, time, func, description, account):
+    def __init__(self, time, func, account):
         self.time = time  # none if time is not necessary
         self.status = "waiting"  # waiting, running, done, failed
         self.error = None  # error if task failed(mostly it is error from a response)
         self.func = func  # function to run
-        self.description = description  # some text to describe
         self.account = account  # account task is running for
         self.perm_dict = account.perm_dict  # link to perDict
         self.logger = account.logger  # link to Logger

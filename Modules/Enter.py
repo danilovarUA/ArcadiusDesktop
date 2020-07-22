@@ -6,7 +6,7 @@ def run(account, logger, perm_dict):
     result, data = account.requester.enter()
     if result:
         account.logger.add_log("Logged in", "Enter", account)
-        new_task = Task(None, Modules.TestModule.run, "TestModulerun()", account)
+        new_task = Task(None, Modules.TestModule.run, account)
         return [True, {"scheduled_tasks": [], "regular_tasks": [new_task]}]
     else:
         account.logger.add_log("Error logging in: {}".format(data), "Enter", account)

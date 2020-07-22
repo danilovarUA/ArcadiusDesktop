@@ -53,13 +53,13 @@ class Account(threading.Thread):
                 self.handle_failed_task(task)
             return result
 
-    def add_task(self, task_time, func, description):
+    def add_task(self, task_time, func):
         print("Task added")
-        self.tasks.append(Task(task_time, func, description, self))
+        self.tasks.append(Task(task_time, func, self))
 
     def add_startup_tasks(self):
         #   self.add_task(None, TestModule.run, "some test task")
-        self.add_task(None, Enter.run, "Enter module")
+        self.add_task(None, Enter.run)
         # TODO: rewrite so that all run() functions in files in Modules folder are ran here
 
     def tick(self):
