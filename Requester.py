@@ -4,6 +4,7 @@ import hashlib
 from bplist.bplist import BPListReader
 from Tools.ExtractCookiesFromResponse import extract_cookies
 from Tools.HeaderBuilder import create_header
+from Tools.UnByteDictionary import un_byte_data
 
 
 class Requester:
@@ -19,7 +20,7 @@ class Requester:
         #try:  # TODO move back
         response = requests.get(url, params=params, headers=self.header, timeout=REQUEST_TIMEOUT)
         reader = BPListReader(response.content)
-        to_check = reader.parse()
+        to_check = un_byte_data(reader.parse())
         if save_cookies:
             to_use = extract_cookies(response)
         else:
@@ -82,5 +83,7 @@ class Requester:
         }
         success, data = self.make(url, params)
         if success:
+            print(data)
+            exit()
             self.account.update_data(data)
         return success, data

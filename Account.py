@@ -94,21 +94,21 @@ class Account(threading.Thread):
     def update_data(self, dict_to_parse, update_perm_dict=True):
         try:
             for world in dict_to_parse["loginConnectedWorlds"]:
-                if world["id"].decode('ascii') == self.server["id"]:
+                if world["id"] == self.server["id"]:
                     self.server["last_login"] = world["lastLoginDate"]
-                    self.server["status"] = world["worldStatus"]["description"].decode("ascii")
+                    self.server["status"] = world["worldStatus"]["description"]
                     break
         except KeyError:
             pass
         for world in dict_to_parse["allAvailableWorlds"]:
-            if world["id"].decode('ascii') == self.server["id"]:  # TODO: remove ascii decoding once all data is decoded
+            if world["id"] == self.server["id"]:
                 self.server["name"] = world["name"]
                 try:
                     self.server["url"]["region"] = world["regionDataURL"]
                 except KeyError:
                     pass
                 self.server["url"]["map"] = world["mapURL"]
-                self.server["url"]["main"] = world["url"].decode('ascii')
+                self.server["url"]["main"] = world["url"]
                 break
 
         # TODO: think about making a list of fields that will be saved here
