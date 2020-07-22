@@ -10,7 +10,7 @@ class Manager:
                 new_account = Account(perm_dict["accs"][acc_index], logger, perm_dict)
                 new_account.start()
                 self.accounts.append(new_account)
-        print("Not a log: Manager started {} account".format(len(self.accounts)))
+        print("Manager started {} account(s)".format(len(self.accounts)))
 
     def toggle_account(self, email, server_id):
         for account in self.accounts:

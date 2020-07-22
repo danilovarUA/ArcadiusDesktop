@@ -25,6 +25,7 @@ class PermDict(UserDict):
     def __setitem__(self, key, value):
         super(PermDict, self).__setitem__(key, value)
         self.changed = True
+        print("__setitem__ detected change")
 
 
 class PermDictThread(threading.Thread):
@@ -51,6 +52,7 @@ class PermDictThread(threading.Thread):
         with open(TEMPDICT_PICKLE_FILENAME, 'wb') as file:
             pickle.dump(self.dictionary, file, protocol=pickle.HIGHEST_PROTOCOL)
         self.dictionary.changed = False
+        print("Stored some data successfully")
 
 
 class PermStorage:

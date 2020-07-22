@@ -1,7 +1,8 @@
 import Modules.TestModule
 from Scheduler.Task import Task
 
-def run(account, logger, perm_dict):
+
+def run(account):
     account.logger.add_log("Logging in", "Enter", account)
     result, data = account.requester.enter()
     if result:

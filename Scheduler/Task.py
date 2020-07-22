@@ -5,8 +5,6 @@ class Task:
         self.error = None  # error if task failed(mostly it is error from a response)
         self.func = func  # function to run
         self.account = account  # account task is running for
-        self.perm_dict = account.perm_dict  # link to perDict
-        self.logger = account.logger  # link to Logger
 
     # function:
     # - takes account to perform requests and store temp information and per_dict to store permanent information
@@ -21,7 +19,7 @@ class Task:
 
     def run(self):
         self.status = "running"
-        result, error_or_data = self.func(self.account, self.logger, self.perm_dict)
+        result, error_or_data = self.func(self.account)
         # TODO do I really need to pass it here to function or can I pass it in modules?
         if not result:
             self.status = "failed"

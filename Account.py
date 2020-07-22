@@ -47,14 +47,12 @@ class Account(threading.Thread):
     def perform_task(self):
         if len(self.tasks) > 0:
             task = self.tasks.pop(0)
-            print("Task performed")
             result = task.run()
             if task.status == "failed":
                 self.handle_failed_task(task)
             return result
 
     def add_task(self, task_time, func):
-        print("Task added")
         self.tasks.append(Task(task_time, func, self))
 
     def add_startup_tasks(self):
@@ -74,7 +72,6 @@ class Account(threading.Thread):
         # Add tasks created by performed task
         if new_tasks is not None:
             self.tasks += new_tasks["regular_tasks"]
-            print(print("Added {} new tasks".format(len(new_tasks["regular_tasks"]))))
             for tasks_time in new_tasks["scheduled_tasks"]:
                 tasks = new_tasks["scheduled_tasks"][tasks_time]
                 if tasks_time in self.scheduled_tasks:
@@ -191,7 +188,7 @@ class Account(threading.Thread):
                 "server_name": self.server["id"],
                 "position": self.perm_dict["accs"]["{}-{}".format(self.email, self.server["id"])]["position"]
             }
-            self.perm_dict.changed = True
+            print("here, updated?")
 
     def handle_failed_task(self, task):
         pass
