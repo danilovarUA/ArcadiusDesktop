@@ -21,7 +21,7 @@ class Account(threading.Thread):
                        "last_login": None,
                        "url": {"region": None, "map": None, "main": None}}
 
-        self.data = {"player": {"-1": {"name": dictionary["name"]}},
+        self.data = {"player": {"-1": {"nick": dictionary["name"]}},
                      # player with index -1 is used when player_id is None so we can have name for logs before
                      # logging in
                      "player_rank": {},
@@ -31,7 +31,7 @@ class Account(threading.Thread):
                      "report": {},
                      "transit": [],
                      "diplomacy": {"red": [], "green": [], "blue": [], "orange": []}}
-        self.player_id = None
+        self.player_id = "-1"
 
         self.requester = Requester(self)
         self.tasks = []
@@ -47,16 +47,18 @@ class Account(threading.Thread):
     def perform_task(self):
         if len(self.tasks) > 0:
             task = self.tasks.pop(0)
+            print("Task performed")
             result = task.run()
             if task.status == "failed":
                 self.handle_failed_task(task)
             return result
 
     def add_task(self, task_time, func, description):
+        print("Task added")
         self.tasks.append(Task(task_time, func, description, self))
 
     def add_startup_tasks(self):
-        self.add_task(None, TestModule.run, "some test task")
+        #   self.add_task(None, TestModule.run, "some test task")
         self.add_task(None, Enter.run, "Enter module")
         # TODO: rewrite so that all run() functions in files in Modules folder are ran here
 
@@ -72,6 +74,7 @@ class Account(threading.Thread):
         # Add tasks created by performed task
         if new_tasks is not None:
             self.tasks += new_tasks["regular_tasks"]
+            print(print("Added {} new tasks".format(len(new_tasks["regular_tasks"]))))
             for tasks_time in new_tasks["scheduled_tasks"]:
                 tasks = new_tasks["scheduled_tasks"][tasks_time]
                 if tasks_time in self.scheduled_tasks:
@@ -100,16 +103,19 @@ class Account(threading.Thread):
                     break
         except KeyError:
             pass
-        for world in dict_to_parse["allAvailableWorlds"]:
-            if world["id"] == self.server["id"]:
-                self.server["name"] = world["name"]
-                try:
-                    self.server["url"]["region"] = world["regionDataURL"]
-                except KeyError:
-                    pass
-                self.server["url"]["map"] = world["mapURL"]
-                self.server["url"]["main"] = world["url"]
-                break
+        try:
+            for world in dict_to_parse["allAvailableWorlds"]:
+                if world["id"] == self.server["id"]:
+                    self.server["name"] = world["name"]
+                    try:
+                        self.server["url"]["region"] = world["regionDataURL"]
+                    except KeyError:
+                        pass
+                    self.server["url"]["map"] = world["mapURL"]
+                    self.server["url"]["main"] = world["url"]
+                    break
+        except KeyError:
+            pass
 
         # TODO: think about making a list of fields that will be saved here
         if "Data" not in dict_to_parse:
@@ -177,19 +183,18 @@ class Account(threading.Thread):
             pass
 
         if update_perm_dict:
-            if self.player_id is not None:
-                name = self.data["player"][self.player_id]["name"]
-            else:
-                name = self.data["player"]["-1"]["name"]
-            self.perm_dict[self.email, self.server["id"]] = {
+            self.perm_dict["accs"]["{}-{}".format(self.email, self.server["id"])] = {
                 "email": self.email,
                 "password": self.password,
-                "name": name,
+                "name": self.data["player"][self.player_id]["nick"],
                 "server_id": self.server["id"],
                 "server_name": self.server["id"],
-                "position": self.perm_dict[self.email, self.server["id"]]["position"]
+                "position": self.perm_dict["accs"]["{}-{}".format(self.email, self.server["id"])]["position"]
             }
             self.perm_dict.changed = True
 
     def handle_failed_task(self, task):
+        pass
+
+    def repr_tasks(self):
         pass

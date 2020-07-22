@@ -83,7 +83,5 @@ class Requester:
         }
         success, data = self.make(url, params)
         if success:
-            print(data)
-            exit()
             self.account.update_data(data)
         return success, data
