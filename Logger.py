@@ -9,11 +9,11 @@ class Logger:
         name = account.data["player"][account.player_id]["nick"]
         new_log = {"text": text, "source": source, "user_visible": user_visible, "finished": finished, "error": None,
                    "time": datetime.now(), "email": account.email, "server": account.server["name"], "name": name}
-        self.permDict["logs"].append(new_log)
-        self.permDict.changed = True
+        print(new_log)
+        self.permDict["logs"]["{}-{}-{}".format(new_log["email"], new_log["server"], new_log["time"])] = new_log
+        return new_log
 
-    def finish_log(self, log_id, success, error):
-        self.permDict["logs"][log_id]["finished"] = success
-        if not success:
-            self.permDict["logs"][log_id]["error"] = error
-        self.permDict.changed = True
+    def finish_log(self, log, success, error):
+        self.permDict["logs"]["{}-{}-{}".format(log["email"], log["server"], log["time"])]["finished"] = success
+        self.permDict["logs"]["{}-{}-{}".format(log["email"], log["server"], log["time"])]["error"] = error
+

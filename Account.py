@@ -11,7 +11,6 @@ RELATIONSHIP_NUM_TO_WORD = {"-1": "red", "1": "blue", "2": "green", "3": "orange
 class Account(threading.Thread):
     def __init__(self, dictionary, logger, perm_dict):
         # email, password, name, server_id, server_name
-        print("New account {}-{} init".format(dictionary["email"], dictionary["server_id"]))
         threading.Thread.__init__(self)
         self.email = dictionary["email"]
         self.password = dictionary["password"]
@@ -43,6 +42,7 @@ class Account(threading.Thread):
         self.perm_dict = perm_dict
 
         self.add_startup_tasks()
+        print(str(self))
 
     def perform_task(self):
         if len(self.tasks) > 0:
@@ -185,13 +185,16 @@ class Account(threading.Thread):
                 "password": self.password,
                 "name": self.data["player"][self.player_id]["nick"],
                 "server_id": self.server["id"],
-                "server_name": self.server["id"],
+                "server_name": self.server["name"],
                 "position": self.perm_dict["accs"]["{}-{}".format(self.email, self.server["id"])]["position"]
             }
-            print("here, updated?")
 
     def handle_failed_task(self, task):
         pass
 
-    def repr_tasks(self):
-        pass
+    def __str__(self):
+        return "Acc({}-{}-{})[{}, {}]".format(self.email,
+                                              self.server["name"],
+                                              self.data["player"][self.player_id]["nick"],
+                                              len(self.tasks),
+                                              len(self.scheduled_tasks))

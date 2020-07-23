@@ -68,7 +68,7 @@ class OverviewPage(QWidget):
         # self.update_accounts()
 
     def update_logs(self):
-        logs = list(reversed(self.perm_dict["logs"]))[:Constants.LOGS_MAX_DISPLAY_AMOUNT]
+        logs = self.get_100_latest_logs()
         self.log_table_widget.setRowCount(len(logs))
         for log_counter in range(len(logs)):
             log = logs[log_counter]
@@ -125,3 +125,13 @@ class OverviewPage(QWidget):
             else:
                 for i in range(4, 9):
                     self.accounts_table_widget.setItem(index, i, TextWidget(''))
+
+    def get_100_latest_logs(self):
+        logs_list = []
+        for log_index in self.perm_dict["logs"]:
+            log = self.perm_dict["logs"][log_index]
+            logs_list.append(log)
+        logs_list = sorted(logs_list, key=lambda item: item['time'])
+        logs_list = logs_list[:100]
+        logs_list = list(reversed(logs_list))
+        return logs_list

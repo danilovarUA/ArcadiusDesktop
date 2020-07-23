@@ -42,13 +42,11 @@ class Requester:
         if not worlds_result[0]:
             self.header = create_header()
             return worlds_result
-        print("Got worlds")
 
         token_result = self.token()
         if not token_result[0]:
             self.header = create_header()
             return token_result
-        print("Got token")
         login_result = self.login()
         if not login_result[0]:
             self.header = create_header()

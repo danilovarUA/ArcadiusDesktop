@@ -10,7 +10,6 @@ import sys
 def go(reset_accs=False, reset_logs=False):
     # Permanent storage set up
     perm_dict = PermStorage().get_dictionary()
-    print(perm_dict)
     if reset_accs:
         perm_dict["accs"] = {}
         perm_dict["accs"]["shit11@shit.com-230"] = {"email": "shit11@shit.com",
@@ -21,7 +20,7 @@ def go(reset_accs=False, reset_logs=False):
                                             "position": "0",
                                             }
     if reset_logs:
-        perm_dict["logs"] = []
+        perm_dict["logs"] = {}
     # Logger set up
 
     logger = Logger(perm_dict)
@@ -38,4 +37,4 @@ def go(reset_accs=False, reset_logs=False):
     sys.exit(exec_code)
 
 
-go(reset_accs=False, reset_logs=False)
+go(reset_accs=False, reset_logs=True)
