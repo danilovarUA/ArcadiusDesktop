@@ -1,4 +1,3 @@
-import Modules.TestModule
 from Scheduler.Task import Task
 
 
@@ -7,8 +6,7 @@ def run(account):
     result, data = account.requester.enter()
     if result:
         account.logger.finish_log(log, result, None)
-        new_task = Task(None, Modules.TestModule.run, account)
-        return [True, {"scheduled_tasks": [], "regular_tasks": [new_task]}]
+        return [True, {"scheduled_tasks": [], "regular_tasks": []}]
     else:
         account.logger.finish_log(log, result, data)
         return [result, data]

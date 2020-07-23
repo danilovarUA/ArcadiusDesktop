@@ -1,5 +1,5 @@
 from Requester import Requester
-from Modules import TestModule, Enter
+from Modules import Enter
 from Scheduler.Task import Task
 import threading
 from datetime import datetime
@@ -56,7 +56,6 @@ class Account(threading.Thread):
         self.tasks.append(Task(task_time, func, self))
 
     def add_startup_tasks(self):
-        #   self.add_task(None, TestModule.run, "some test task")
         self.add_task(None, Enter.run)
         # TODO: rewrite so that all run() functions in files in Modules folder are ran here
 
@@ -190,7 +189,18 @@ class Account(threading.Thread):
             }
 
     def handle_failed_task(self, task):
-        pass
+        if task.status == "failed":  # TODO is this check necessary
+            if "Session expired" in task.error:
+                task.status = "waiting"
+                self.tasks.append(task)
+                print("Found taks with expired session!!!")
+            elif "Please try again in a minute" in task.error:
+                task.status = "waiting"
+                self.tasks.append(task)
+                print("Found task with try again later")
+            else:
+                pass
+
 
     def __str__(self):
         return "Acc({}-{}-{})[{}, {}]".format(self.email,

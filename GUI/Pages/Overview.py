@@ -5,6 +5,7 @@ import Constants
 from GUI.Translation import Translation
 from GUI.Template.Table import Table
 from GUI.Template.TextWidget import TextWidget
+import time
 
 
 def checkbox_handler(item: QTableWidgetItem):
@@ -68,6 +69,7 @@ class OverviewPage(QWidget):
         # self.update_accounts()
 
     def update_logs(self):
+        time_here = time.time()
         logs = self.get_100_latest_logs()
         self.log_table_widget.setRowCount(len(logs))
         for log_counter in range(len(logs)):
@@ -79,7 +81,11 @@ class OverviewPage(QWidget):
             self.log_table_widget.setItem(log_counter, 2, TextWidget(str(log["email"])))  # TODO supposed to be a class Account here
             self.log_table_widget.setItem(log_counter, 3, TextWidget(log["name"]))
             self.log_table_widget.setItem(log_counter, 4, TextWidget(log["source"]))
-            self.log_table_widget.setItem(log_counter, 5, TextWidget(log["text"]))
+            if log["finished"] is None or log["finished"]:
+                self.log_table_widget.setItem(log_counter, 5, TextWidget(log["text"]))
+            else:
+                self.log_table_widget.setItem(log_counter, 5, TextWidget(log["text"], red=True))
+        print("Time elapsed: {}".format(time.time() - time_here))
 
     def update_accounts(self):
         _accounts = {a.order: (a, thread) for a, thread in self.accounts_thread.get_accounts().items()}
@@ -127,6 +133,7 @@ class OverviewPage(QWidget):
                     self.accounts_table_widget.setItem(index, i, TextWidget(''))
 
     def get_100_latest_logs(self):
+
         logs_list = []
         for log_index in self.perm_dict["logs"]:
             log = self.perm_dict["logs"][log_index]

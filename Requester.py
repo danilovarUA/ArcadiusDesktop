@@ -20,7 +20,10 @@ class Requester:
         #try:  # TODO move back
         response = requests.get(url, params=params, headers=self.header, timeout=REQUEST_TIMEOUT)
         reader = BPListReader(response.content)
-        to_check = un_byte_data(reader.parse())
+        if "Please try again in a minute" in response.text:
+            return [False, "Please try again in a minute"]
+        data = reader.parse()
+        to_check = un_byte_data(data)
         if save_cookies:
             to_use = extract_cookies(response)
         else:

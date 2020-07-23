@@ -13,12 +13,48 @@ def go(reset_accs=False, reset_logs=False):
     if reset_accs:
         perm_dict["accs"] = {}
         perm_dict["accs"]["shit11@shit.com-230"] = {"email": "shit11@shit.com",
-                                            "password": "shit@shit.com",
-                                            "name": "shit",
-                                            "server_id": "230",
-                                            "server_name": "sName",
-                                            "position": "0",
-                                            }
+                                                    "password": "shit@shit.com",
+                                                    "name": "shit",
+                                                    "server_id": "230",
+                                                    "server_name": "sName",
+                                                    "position": "0",
+                                                    }
+        # perm_dict["accs"]["Mashulya1988fir@mail.ru-193"] = {"email": "Mashulya1988fir@mail.ru",
+        #                                                     "password": "130206",
+        #                                                     "name": "noname",
+        #                                                     "server_id": "193",
+        #                                                     "server_name": "Snoname",
+        #                                                     "position": "1",
+        #                                                     }
+        perm_dict["accs"]["deff@gm.com-193"] = {"email": "deff@gm.com",
+                                                "password": "130206",
+                                                "name": "noname",
+                                                "server_id": "193",
+                                                "server_name": "Snoname",
+                                                "position": "1",
+                                                }
+        perm_dict["accs"]["Bantikru10@yandex.ru-193"] = {"email": "Bantikru10@yandex.ru",
+                                                         "password": "13080206",
+                                                         "name": "noname",
+                                                         "server_id": "193",
+                                                         "server_name": "Snoname",
+                                                         "position": "1",
+                                                         }
+        perm_dict["accs"]["Bantikru10@mail.ru-193"] = {"email": "Bantikru10@mail.ru",
+                                                       "password": "13080206",
+                                                       "name": "noname",
+                                                       "server_id": "193",
+                                                       "server_name": "Snoname",
+                                                       "position": "1",
+                                                       }
+        perm_dict["accs"]["dimaplachotny@gmail.com-193"] = {"email": "dimaplachotny@gmail.com",
+                                                            "password": "130206",
+                                                            "name": "noname",
+                                                            "server_id": "193",
+                                                            "server_name": "Snoname",
+                                                            "position": "1",
+                                                            }
+
     if reset_logs:
         perm_dict["logs"] = {}
     # Logger set up
@@ -37,4 +73,4 @@ def go(reset_accs=False, reset_logs=False):
     sys.exit(exec_code)
 
 
-go(reset_accs=False, reset_logs=True)
+go(reset_accs=True, reset_logs=True)
